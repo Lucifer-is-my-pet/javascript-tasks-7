@@ -1,8 +1,12 @@
 'use strict';
 
+function checkIfInvalid(arrayToCheck) {
+    return typeof arrayToCheck === 'undefined' || arrayToCheck.length === 0;
+}
+
 exports.init = function () {
     Object.prototype.checkContainsKeys = function (keys) {
-        if (typeof keys === 'undefined' || keys.length === 0) {
+        if (checkIfInvalid(keys)) {
             return null;
         }
         if (Object.getPrototypeOf(this) === Object.prototype ||
@@ -19,7 +23,7 @@ exports.init = function () {
     };
 
     Object.prototype.checkHasKeys = function (keys) {
-        if (typeof keys === 'undefined' || keys.length === 0) {
+        if (checkIfInvalid(keys)) {
             return null;
         }
         if (Object.getPrototypeOf(this) === Object.prototype ||
@@ -48,7 +52,7 @@ exports.init = function () {
     };
 
     Object.prototype.checkContainsValues = function (values) {
-        if (typeof values === 'undefined' || values.length === 0) {
+        if (checkIfInvalid(values)) {
             return null;
         }
         if (Object.getPrototypeOf(this) === Object.prototype ||
@@ -70,7 +74,7 @@ exports.init = function () {
     };
 
     Object.prototype.checkHasValues = function (values) {
-        if (typeof values === 'undefined' || values.length === 0) {
+        if (checkIfInvalid(values)) {
             return null;
         }
         if (Object.getPrototypeOf(this) === Object.prototype ||
@@ -101,7 +105,8 @@ exports.init = function () {
     };
 
     Object.prototype.checkHasValueType = function (key, type) {
-        if (typeof type === 'undefined' || [String, Number, Function, Array].indexOf(type) < 0) {
+        if (checkIfInvalid(key) || checkIfInvalid(type) ||
+            [String, Number, Function, Array].indexOf(type) < 0) {
             return null;
         }
         if (Object.getPrototypeOf(this) === Object.prototype ||
@@ -112,7 +117,7 @@ exports.init = function () {
     };
 
     Object.prototype.checkHasLength = function (length) {
-        if (typeof length === 'undefined' || length < 0) {
+        if (checkIfInvalid(length)) {
             return null;
         }
         if (Object.getPrototypeOf(this) === String.prototype ||
@@ -122,7 +127,7 @@ exports.init = function () {
     };
 
     Function.prototype.checkHasParamsCount = function (count) {
-        if (typeof count === 'undefined' || count < 0) {
+        if (checkIfInvalid(count)) {
             return null;
         }
         return this.length === count;
@@ -130,7 +135,7 @@ exports.init = function () {
     };
 
     String.prototype.checkHasWordsCount = function (count) {
-        if (typeof count === 'undefined' || count < 0) {
+        if (checkIfInvalid(count)) {
             return null;
         }
         var originalString = this;
