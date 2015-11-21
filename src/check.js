@@ -4,13 +4,17 @@ function checkIfInvalid(arrayToCheck) {
     return typeof arrayToCheck === 'undefined' || arrayToCheck.length === 0;
 }
 
+function checkForTypes(objectToCheck, firstType, secondType) {
+    return Object.getPrototypeOf(objectToCheck) === firstType.prototype ||
+        Object.getPrototypeOf(objectToCheck) === secondType.prototype;
+}
+
 exports.init = function () {
     Object.prototype.checkContainsKeys = function (keys) {
         if (checkIfInvalid(keys)) {
             return null;
         }
-        if (Object.getPrototypeOf(this) === Object.prototype ||
-            Object.getPrototypeOf(this) === Array.prototype) {
+        if (checkForTypes(this, Object, Array)) {
             var contains = true;
             var thisKeys = Object.keys(this);
             keys.forEach(function (key) {
@@ -26,28 +30,22 @@ exports.init = function () {
         if (checkIfInvalid(keys)) {
             return null;
         }
-        if (Object.getPrototypeOf(this) === Object.prototype ||
-            Object.getPrototypeOf(this) === Array.prototype) {
+        if (checkForTypes(this, Object, Array)) {
             if (Object.keys(this).length !== keys.length) {
                 return false;
             }
+            var has = this.checkContainsKeys(keys);
 
             var stringKeys = keys.map(function (key) {
                 return key.toString();
             });
-            var contains = true;
             var thisKeys = Object.keys(this);
-            stringKeys.forEach(function (key) {
-                if (thisKeys.indexOf(key) === -1) {
-                    contains = false;
-                }
-            });
             thisKeys.forEach(function (key) {
                 if (stringKeys.indexOf(key) === -1) {
-                    contains = false;
+                    has = false;
                 }
             });
-            return contains;
+            return has;
         }
     };
 
@@ -55,8 +53,7 @@ exports.init = function () {
         if (checkIfInvalid(values)) {
             return null;
         }
-        if (Object.getPrototypeOf(this) === Object.prototype ||
-            Object.getPrototypeOf(this) === Array.prototype) {
+        if (checkForTypes(this, Object, Array)) {
             var ownValues = [];
             for (var i in this) {
                 if (this.hasOwnProperty(i)) {
@@ -77,8 +74,7 @@ exports.init = function () {
         if (checkIfInvalid(values)) {
             return null;
         }
-        if (Object.getPrototypeOf(this) === Object.prototype ||
-            Object.getPrototypeOf(this) === Array.prototype) {
+        if (checkForTypes(this, Object, Array)) {
             var ownValues = [];
             for (var i in this) {
                 if (this.hasOwnProperty(i)) {
@@ -89,18 +85,14 @@ exports.init = function () {
                 return false;
             }
 
-            var contains = true;
-            Object.keys(values).forEach(function (key) {
-                if (ownValues.indexOf(values[key]) === -1) {
-                    contains = false;
-                }
-            });
+            var has = this.checkContainsValues(values);
+
             ownValues.forEach(function (value) {
                 if (values.indexOf(value) === -1) {
-                    contains = false;
+                    has = false;
                 }
             });
-            return contains;
+            return has;
         }
     };
 
@@ -109,8 +101,7 @@ exports.init = function () {
             [String, Number, Function, Array].indexOf(type) < 0) {
             return null;
         }
-        if (Object.getPrototypeOf(this) === Object.prototype ||
-            Object.getPrototypeOf(this) === Array.prototype) {
+        if (checkForTypes(this, Object, Array)) {
             // через прототипы не получается, type всегда функция
             return typeof this[key] === type.name.toLowerCase();
         }
@@ -120,8 +111,7 @@ exports.init = function () {
         if (checkIfInvalid(length)) {
             return null;
         }
-        if (Object.getPrototypeOf(this) === String.prototype ||
-            Object.getPrototypeOf(this) === Array.prototype) {
+        if (checkForTypes(this, String, Array)) {
             return this.length === length;
         }
     };
