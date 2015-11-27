@@ -10,17 +10,14 @@ function checkIfInvalid(dataToCheck) {
     return dataToCheck < 0;
 }
 
-function checkForTypes(objectToCheck, firstType, secondType) {
-    return Object.getPrototypeOf(objectToCheck) === firstType.prototype ||
-        Object.getPrototypeOf(objectToCheck) === secondType.prototype;
-}
-
 exports.init = function () {
+    Object.prototype.checkForTypes = function (firstType, secondType) {
+        return Object.getPrototypeOf(this) === firstType.prototype ||
+            Object.getPrototypeOf(this) === secondType.prototype;
+    };
+
     Object.prototype.checkContainsKeys = function (keys) {
-        if (checkIfInvalid(keys)) {
-            return null;
-        }
-        if (!checkForTypes(this, Object, Array)) {
+        if (checkIfInvalid(keys) || !this.checkForTypes(Object, Array)) {
             return null;
         }
         var contains = true;
@@ -34,10 +31,7 @@ exports.init = function () {
     };
 
     Object.prototype.checkHasKeys = function (keys) {
-        if (checkIfInvalid(keys)) {
-            return null;
-        }
-        if (!checkForTypes(this, Object, Array)) {
+        if (checkIfInvalid(keys) || !this.checkForTypes(Object, Array)) {
             return null;
         }
         var thisKeys = Object.keys(this);
@@ -58,10 +52,7 @@ exports.init = function () {
     };
 
     Object.prototype.checkContainsValues = function (values) {
-        if (checkIfInvalid(values)) {
-            return null;
-        }
-        if (!checkForTypes(this, Object, Array)) {
+        if (checkIfInvalid(values) || !this.checkForTypes(Object, Array)) {
             return null;
         }
         var ownValues = [];
@@ -80,10 +71,7 @@ exports.init = function () {
     };
 
     Object.prototype.checkHasValues = function (values) {
-        if (checkIfInvalid(values)) {
-            return null;
-        }
-        if (!checkForTypes(this, Object, Array)) {
+        if (checkIfInvalid(values) || !this.checkForTypes(Object, Array)) {
             return null;
         }
         var ownValues = [];
@@ -108,20 +96,15 @@ exports.init = function () {
 
     Object.prototype.checkHasValueType = function (key, type) {
         if (checkIfInvalid(key) || checkIfInvalid(type) ||
-            [String, Number, Function, Array].indexOf(type) < 0) {
-            return null;
-        }
-        if (!checkForTypes(this, Object, Array)) {
+            [String, Number, Function, Array].indexOf(type) < 0 ||
+            !this.checkForTypes(Object, Array)) {
             return null;
         }
         return typeof this[key] === type.name.toLowerCase();
     };
 
     Object.prototype.checkHasLength = function (length) {
-        if (checkIfInvalid(length)) {
-            return null;
-        }
-        if (!checkForTypes(this, String, Array)) {
+        if (checkIfInvalid(length) || !this.checkForTypes(String, Array)) {
             return null;
         }
         return this.length === length;
