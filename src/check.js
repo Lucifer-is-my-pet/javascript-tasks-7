@@ -96,9 +96,12 @@ exports.init = function () {
 
     Object.prototype.checkHasValueType = function (key, type) {
         if (checkIfInvalid(key) || checkIfInvalid(type) ||
-            [String, Number, Function, Array].indexOf(type) < 0 ||
+            [String, Number, Function, Array].indexOf(type) === -1 ||
             !this.checkForTypes(Object, Array)) {
             return null;
+        }
+        if (type === Array) {
+            return Object.getPrototypeOf(this[key]) === Array.prototype;
         }
         return typeof this[key] === type.name.toLowerCase();
     };
